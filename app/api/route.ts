@@ -68,7 +68,7 @@ export async function POST(request: Request) {
             console.log(
               `[Database Success] Counter untuk ${act.param1} berhasil di-update ke angka: ${updateDatabase.total_tasks}`,
             );
-            ninaAgentResult.message_response += `\n\n${await GetTaskCounter()}`;
+            // ninaAgentResult.message_response += `\n\n${await GetTaskCounter()}`;
           } else {
             console.error(
               `[Database Error] Gagal memperbarui tabel task_counter untuk ${act.param1}`,
