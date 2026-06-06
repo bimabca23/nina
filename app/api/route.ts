@@ -2,6 +2,19 @@ import { NextResponse } from "next/server";
 import Nina from "../service/nina";
 import { GetTaskCounter, TaskCounter } from "../service/taskCounter";
 
+export async function OPTIONS() {
+  const response = new NextResponse(null, { status: 204 });
+
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization",
+  );
+
+  return response;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -72,12 +85,20 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(ninaAgentResult);
+    const response = NextResponse.json(ninaAgentResult);
+
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+
+    return response;
   } catch (error) {
-    console.error("An error occurred in Chat API Route:", error);
-    return NextResponse.json(
-      { error: "Terjadi kegagalan komunikasi pada internal server." },
+    console.error("API Error:", error);
+    const errRes = NextResponse.json(
+      { error: "Terjadi kegagalan pada internal server." },
       { status: 500 },
     );
+    errRes.headers.set("Access-Control-Allow-Origin", "*");
+    return errRes;
   }
 }
