@@ -45,22 +45,11 @@ export async function TaskCounter(
   const validJumlahInput = isNaN(parsedJumlahInput) ? 0 : parsedJumlahInput;
 
   try {
-    const { data: currentRecord, error: selectError } = await supabase
-      .from("task_counter")
-      .select("jumlah")
-      .eq("inisial", cleanInitials)
-      .maybeSingle();
-
-    if (selectError) throw selectError;
-
-    const currentCount = currentRecord ? currentRecord.jumlah : 0;
-    const newCount = validJumlahInput > 0 ? validJumlahInput : currentCount + 1;
-
     const { error: upsertError } = await supabase.from("task_counter").upsert(
       {
         inisial: cleanInitials,
         nama: props.nama.trim(),
-        jumlah: newCount,
+        jumlah: validJumlahInput,
       },
       {
         onConflict: "inisial",
@@ -70,7 +59,7 @@ export async function TaskCounter(
     if (upsertError) throw upsertError;
 
     return {
-      total_tasks: newCount,
+      total_tasks: validJumlahInput,
       success: true,
     };
   } catch (error) {
